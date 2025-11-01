@@ -1,0 +1,13 @@
+# Node Modules
+/node_modules
+
+# Build output
+/dist
+/build
+
+# VITE/Tooling
+.vite/
+npm-debug.log*
+
+# IDE/System files
+.DS_Store

@@ -1,0 +1,10 @@
+# Node Modules
+/node_modules
+
+# Environment Variables (CRITICAL)
+.env
+npm-debug.log*
+
+# MongoDB (Local Data)
+/data/db
+*.sqlite
