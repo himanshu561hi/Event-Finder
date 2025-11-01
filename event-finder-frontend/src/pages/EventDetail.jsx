@@ -95,7 +95,7 @@ const EventDetail = () => {
     }
     return (
         <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors duration-150 py-2 border-b border-gray-100 last:border-b-0">
-            <span className="text-xl flex-shrink-0">{iconSvg}</span> 
+            <span className="text-xl">{iconSvg}</span> 
             <span className="font-medium underline">{label}</span>
         </a>
     );

@@ -41,7 +41,7 @@ const WelcomeBanner = () => {
 
                     {/* User Image */}
                     {userPhotoUrl && (
-                        <div className="ml-4 flex-shrink-0">
+                        <div className="ml-4">
                             <img 
                                 src={userPhotoUrl} 
                                 alt={user.displayName} 

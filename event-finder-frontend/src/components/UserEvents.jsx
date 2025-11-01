@@ -73,12 +73,12 @@ const UserEvents = () => {
                                 {event.imageURL ? (
                                     <img src={event.imageURL} alt={event.title} className="w-full h-full object-cover" />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-blue-500 text-white text-3xl">🎉</div>
+                                    <div className="w-full h-full flex items-center justify-center from-indigo-500 to-blue-500 text-white text-3xl">🎉</div>
                                 )}
                             </div>
                             
                             {/* Card Content */}
-                            <div className="p-4 flex-grow flex flex-col">
+                            <div className="p-4 lex flex-col">
                                 <h4 className="text-lg font-bold text-gray-900 mb-1 truncate">{event.title}</h4>
                                 <p className="text-sm text-gray-600 mb-3 truncate">📍 {event.location}</p>
                                 

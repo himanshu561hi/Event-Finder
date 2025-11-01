@@ -30,7 +30,7 @@ const EventLinks = ({ event }) => {
                 Connect with Us
             </h1>
 
-            <div className className="flex flex-col sm:flex-row gap-6 w-full justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 w-full justify-center">
 
                 {event.instagramLink && (
                     <a 
@@ -39,7 +39,7 @@ const EventLinks = ({ event }) => {
                         rel="noopener noreferrer"
                         className="flex flex-col items-center text-center p-3 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-gray-50 border border-gray-100 min-w-[120px]"
                     >
-                        <div className="p-3 rounded-full bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 shadow-md mb-2">
+                        <div className="p-3 rounded-full from-pink-500 via-red-500 to-yellow-500 shadow-md mb-2">
                             <InstagramIcon />
                         </div>
                         <div className="text-sm font-semibold text-gray-800">Instagram</div>
