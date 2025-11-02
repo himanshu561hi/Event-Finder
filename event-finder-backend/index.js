@@ -47,7 +47,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-
+app.get('/', (req, res) => {
+  res.send('Hello from Vercel!');
+});
 
 // 🧹 FIX: body-parser is redundant. Use Express built-in middleware.
 app.use(express.json()); // JSON body parsing
