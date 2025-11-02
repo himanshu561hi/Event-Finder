@@ -15,7 +15,7 @@
     "routes": [
         {
             "src": "/api/(.*)",
-            "dest": "src/index.ts" // API राउट्स को backend पर भेजें
+            "dest": "index.js"
         },
         {
             "src": "/(.*)",
