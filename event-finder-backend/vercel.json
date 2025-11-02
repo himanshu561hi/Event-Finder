@@ -2,13 +2,24 @@
     "builds": [
         {
             "src": "src/index.ts",
-            "use": "@vercel/node"
+            "use": "@vercel/node",
+            "config": {
+                "includeFiles": ["node_modules/**"] // यदि आवश्यक हो
+            }
+        },
+        {
+            "src": "event-finder-frontend/package.json",
+            "use": "@vercel/static-build" // या @vercel/vite-builder
         }
     ],
     "routes": [
         {
+            "src": "/api/(.*)",
+            "dest": "src/index.ts" // API राउट्स को backend पर भेजें
+        },
+        {
             "src": "/(.*)",
-            "dest": "index.js" 
+            "dest": "event-finder-frontend/dist/$1" 
         }
     ]
 }
