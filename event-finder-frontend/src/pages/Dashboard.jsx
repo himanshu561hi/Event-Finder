@@ -1,8 +1,9 @@
+// src/pages/Dashboard.jsx (FIXED: Display Verified Details)
 
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { Link } from 'react-router-dom'; 
-import UserEvents from '../components/UserEvents.jsx'; // 👈 Dedicated component for user's events
+import UserEvents from '../components/UserEvents.jsx'; 
 
 const Dashboard = () => {
     const { user, loading, isAuthenticated } = useAuth();
@@ -12,11 +13,14 @@ const Dashboard = () => {
     }
 
     if (!isAuthenticated) {
-        // This acts as a route guard
         return <h1 className="text-xl text-red-600 mt-10">Access Denied. Please login.</h1>;
     }
     
-    const userName = user.displayName;
+    // 🎯 NEW: Verification Data Extraction
+    const isVerified = user.verifiedProfile === true;
+    const verifiedData = user.verificationDetails || {};
+
+    const userName = isVerified ? verifiedData.fullName : user.displayName;
     const userEmail = user.email;
     const userPhotoUrl = user.profilePhoto;
 
@@ -26,7 +30,7 @@ const Dashboard = () => {
                 User Dashboard
             </h2>
 
-            {/* 1. PROFILE DETAILS SECTION */}
+            {/* 1. PROFILE DETAILS SECTION (Displaying Verified Data) */}
             <div className="flex items-start bg-white p-6 border border-gray-200 rounded-lg shadow-md mb-8">
                 {userPhotoUrl && (
                     <img 
@@ -38,7 +42,22 @@ const Dashboard = () => {
                 
                 <div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-1">{userName}</h3>
-                    <p className="text-gray-600 mb-4">📧 {userEmail}</p>
+                    
+                    {/* Verified Details vs. Basic Details */}
+                    {isVerified && verifiedData.mobileNumber ? (
+                        <div className="text-sm text-gray-700 space-y-1 mb-4">
+                            <p className="font-medium text-green-700">✅ Profile Verified</p>
+                            <p>📧 {userEmail}</p>
+                            <p>📱 {verifiedData.mobileNumber}</p>
+                            <p>📍 {verifiedData.fullAddress}</p>
+                        </div>
+                    ) : (
+                        <div className="text-sm text-gray-500 space-y-1 mb-4">
+                            <p className="font-medium text-red-700">❌ Verification Required</p>
+                            <p>📧 {userEmail}</p>
+                        </div>
+                    )}
+                    
                     <p className="text-sm text-gray-500">
                         👤 <b>Account Type:</b> Google User
                     </p>

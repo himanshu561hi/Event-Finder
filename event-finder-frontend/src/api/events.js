@@ -1,26 +1,29 @@
 // src/api/events.js
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5050/api';
+// 🔑 FIX: Environment variable se URL use karein
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5050/api'; 
+// NOTE: VITE projects mein environment variables ko VITE_ prefix se access karte hain.
 
 export const getEvents = async (locationFilter = '', userLat = null, userLon = null, radius = null) => {
     try {
-        let url = `${API_BASE_URL}/events?`;
-        let params = [];
+        let url = `${API_BASE_URL}/events`;
+        const params = new URLSearchParams();
 
-        // 1. Add location filter if present
         if (locationFilter) {
-            params.push(`location=${locationFilter}`);
+            params.append('location', locationFilter);
         }
         
-        // 2. NEW: Add geographical parameters if all are present
         if (userLat && userLon && radius) {
-            params.push(`userLat=${userLat}`);
-            params.push(`userLon=${userLon}`);
-            params.push(`radius=${radius}`);
+            params.append('userLat', userLat);
+            params.append('userLon', userLon);
+            params.append('radius', radius);
         }
 
-        url += params.join('&');
+        // Add parameters to the URL
+        if (params.toString()) {
+            url += `?${params.toString()}`;
+        }
         
         const response = await axios.get(url);
         return response.data;
@@ -35,7 +38,7 @@ export const createEvent = async (eventData) => {
         const response = await axios.post(
             `${API_BASE_URL}/events`, 
             eventData,
-            { withCredentials: true } // <-- CRITICAL: Include cookies for authentication
+            { withCredentials: true } 
         );
         return response.data;
     } catch (error) {
@@ -50,6 +53,20 @@ export const getEventDetail = async (id) => {
         return response.data;
     } catch (error) {
         console.error(`Error fetching event ${id}:`, error);
+        throw error;
+    }
+};
+
+// NEW: Helper function to get distance (used in EventDetail)
+export const getEventDistance = async (eventId, userLat, userLon) => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/events/distance/${eventId}?userLat=${userLat}&userLon=${userLon}`,
+            { withCredentials: true }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching road distance:", error);
         throw error;
     }
 };

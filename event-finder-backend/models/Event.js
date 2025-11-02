@@ -1,9 +1,9 @@
-// models/Event.js
+// backend/models/Event.js
 const mongoose = require('mongoose');
 
 const EventSchema = new mongoose.Schema({
     ownerId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId, // FIX: Use Mongoose ObjectId for proper reference
         required: true,
     },
     title: {
@@ -31,7 +31,7 @@ const EventSchema = new mongoose.Schema({
     imageURL: String,
     instagramLink: String,
     websiteLink: String,
-    registrationLink: String, // This was missing in the schema but added in the form
+    registrationLink: String,
     maxParticipants: {
         type: Number,
         default: 1

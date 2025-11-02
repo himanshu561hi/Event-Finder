@@ -1,8 +1,11 @@
+// src/pages/CreateEvent.jsx
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios'; 
 import { getEventDetail } from '../api/events.js'; 
+
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5050/api';
 
 const initialFormData = {
     title: '', description: '', location: '', date: '',
@@ -29,7 +32,14 @@ const CreateEvent = () => {
                 try {
                     const data = await getEventDetail(editId);
                     
-                    const formatDate = (isoDate) => isoDate ? new Date(isoDate).toISOString().split('T')[0] : '';
+                    const formatDate = (isoDate) => {
+                        if (!isoDate) return '';
+                        // Ensures date format is 'YYYY-MM-DD' for input type="date"
+                        const d = new Date(isoDate);
+                        const month = (d.getMonth() + 1).toString().padStart(2, '0');
+                        const day = d.getDate().toString().padStart(2, '0');
+                        return `${d.getFullYear()}-${month}-${day}`;
+                    };
                     
                     setFormData({
                         title: data.title,
@@ -47,11 +57,15 @@ const CreateEvent = () => {
                     });
                     setIsEditing(true);
                 } catch (e) {
-                    setError("Could not load event data for editing.");
+                    setError("Could not load event data for editing. Check event ID or connection.");
                     setIsEditing(false); 
                 }
             };
             fetchExistingEvent();
+        } else {
+            // Reset to initial state if no editId is present
+            setFormData(initialFormData);
+            setIsEditing(false);
         }
     }, [editId]); 
 
@@ -74,38 +88,50 @@ const CreateEvent = () => {
 
         try {
             if (!formData.title || !formData.location || !formData.date || parseInt(formData.maxParticipants) <= 0) {
-                setError("Please fill in all required fields.");
+                setError("Please fill in all required fields (Title, Location, Event Date, Max Participants).");
                 setSubmitting(false);
                 return;
             }
 
+            // Ensure fee and maxParticipants are numbers before sending
+            const dataToSend = {
+                ...formData,
+                fee: Number(formData.fee),
+                maxParticipants: Number(formData.maxParticipants)
+            };
+
             if (isEditing) {
+                // 🔑 FIX: API_BASE_URL use karein
                 await axios.put(
-                    `http://localhost:5050/api/events/${editId}`, 
-                    formData, 
+                    `${API_BASE_URL}/events/${editId}`, 
+                    dataToSend, 
                     { withCredentials: true }
                 );
             } else {
+                // 🔑 FIX: API_BASE_URL use karein
                 await axios.post(
-                    `http://localhost:5050/api/events`, 
-                    formData, 
+                    `${API_BASE_URL}/events`, 
+                    dataToSend, 
                     { withCredentials: true }
                 );
             }
             
             setSuccess(true);
-            setTimeout(() => { navigate('/'); }, 1500); 
+            setTimeout(() => { navigate('/dashboard'); }, 1500); // Redirect to dashboard after creation/edit
             
         } catch (err) {
-            setError(err.response?.data?.error || `Error ${isEditing ? 'updating' : 'creating'} event.`);
+            const errorMsg = err.response?.data?.error || `Error ${isEditing ? 'updating' : 'creating'} event. Check console for details.`;
+            setError(errorMsg);
+            console.error(err);
         } finally {
             setSubmitting(false);
         }
     };
   
+    // Remaining JSX is unchanged to maintain UI/UX
     return (
         <div className="max-w-xl mx-auto p-6 border border-gray-200 rounded-lg shadow-lg bg-white">
-            <Link to="/" className="text-gray-600 hover:text-gray-800 mb-4 block">
+            <Link to="/dashboard" className="text-gray-600 hover:text-gray-800 mb-4 block">
                 ← Back to Dashboard
             </Link>
             
@@ -113,6 +139,7 @@ const CreateEvent = () => {
                 {isEditing ? 'Edit Event' : 'Create New Event'} 
             </h2>
             
+            {/* ... success/error messages ... */}
             {success && <p className="text-green-600 font-bold mb-4">✅ Event {isEditing ? 'updated' : 'created'} successfully! Redirecting...</p>}
             {error && <p className="text-red-600 font-bold mb-4">❌ Error: {error}</p>}
             
@@ -138,7 +165,7 @@ const CreateEvent = () => {
                 <input type="date" name="date" value={formData.date} onChange={handleChange} required disabled={submitting} className={inputClasses} />
 
                 <label className="text-gray-700 font-medium">Registration Last Date:</label>
-                <input type="date" name="lastRegistrationDate" value={formData.lastRegistrationDate} onChange={handleChange} required disabled={submitting} className={inputClasses} />
+                <input type="date" name="lastRegistrationDate" value={formData.lastRegistrationDate} onChange={handleChange} disabled={submitting} className={inputClasses} />
 
                 <label className="text-gray-700 font-medium">Location (City/Address):</label>
                 <input name="location" value={formData.location} onChange={handleChange} required disabled={submitting} className={inputClasses} />

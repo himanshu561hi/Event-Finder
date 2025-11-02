@@ -1,4 +1,5 @@
 // src/components/WelcomeBanner.jsx
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; 
 import { useAuth } from '../context/AuthContext.jsx';
@@ -11,7 +12,9 @@ const WelcomeBanner = () => {
         return null;
     }
     
-    const userPhotoUrl = user?.profilePhoto;
+    const rawPhotoUrl = user?.profilePhoto;
+    // FIX: Convert image URL to secure HTTPS for display
+    const securePhotoUrl = rawPhotoUrl ? rawPhotoUrl.replace('http://', 'https://') : null;
 
     return (
         <div className="max-w-4xl mx-auto px-8 pt-8"> 
@@ -28,7 +31,6 @@ const WelcomeBanner = () => {
                 {/* Right Side: Image, Home Button, and Menu Icon Container */}
                 <div className="flex items-center space-x-3 relative">
                     
-                    {/* Home Button (SVG) */}
                     <Link 
                         to="/" 
                         className="p-2 text-gray-700 hover:text-blue-600 focus:outline-none flex items-center justify-center rounded-lg border border-transparent hover:border-gray-200 transition-colors"
@@ -39,12 +41,12 @@ const WelcomeBanner = () => {
                         </svg>
                     </Link>
 
-                    {/* User Image */}
-                    {userPhotoUrl && (
+                    {/* User Image (Uses secure URL) */}
+                    {securePhotoUrl && (
                         <div className="ml-4">
                             <img 
-                                src={userPhotoUrl} 
-                                alt={user.displayName} 
+                                src={securePhotoUrl} 
+                                alt={user.displayName || "User Avatar"} 
                                 className="w-16 h-16 rounded-full border-2 border-blue-700 object-cover shadow-sm"
                             />
                         </div>

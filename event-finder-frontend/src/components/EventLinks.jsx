@@ -1,27 +1,40 @@
 import React from 'react';
+
+/**
+ * Renders dynamic social media and website links using Font Awesome icons.
+ * This component is used on the Event Detail page.
+ */
 const EventLinks = ({ event }) => {
     
+    // Safety check: Don't render if neither link is present
     if (!event || (!event.instagramLink && !event.websiteLink)) {
         return null; 
     }
 
-    const ICON_SIZE_CLASSES = "h-10 w-10 text-white";
-    
-    const InstagramIcon = () => (
-        <svg className={ICON_SIZE_CLASSES} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-        </svg>
-    );
+    // Helper function to render a single dynamic link card
+    const LinkCard = ({ label, url, iconClass, iconColor, subtext }) => {
+        if (!url) return null;
 
-    const WebsiteIcon = () => (
-        <svg className={ICON_SIZE_CLASSES} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
-            <path d="M2 12h20"/>
-        </svg>
-    );
+        return (
+            <a 
+                href={url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                // Styling: Clean white background, subtle hover effect, flex-grow for layout
+                className="flex flex-col items-center p-4 rounded-xl transition-shadow duration-200 hover:shadow-lg bg-white border border-gray-200 flex-grow min-w-[120px]"
+            >
+                {/* Icon Circle */}
+                <div className={`p-3 rounded-full mb-2 ${iconColor === 'text-pink-600' ? 'bg-pink-100' : 'bg-blue-100'}`}> 
+                    {/* Font Awesome Icon */}
+                    <span className={`text-2xl ${iconClass} ${iconColor}`}></span>
+                </div>
+                
+                {/* Title & Subtitle */}
+                <div className="text-sm font-medium text-gray-800">{label}</div>
+                <div className="text-xs text-gray-500 mt-1">{subtext}</div>
+            </a>
+        );
+    };
 
     return (
         <div className="flex flex-col items-center justify-center py-6 px-8 bg-white rounded-xl font-sans antialiased max-w-lg mx-auto"> 
@@ -30,37 +43,27 @@ const EventLinks = ({ event }) => {
                 Connect with Us
             </h1>
 
-            <div className="flex flex-col sm:flex-row gap-6 w-full justify-center">
+            {/* Icon Container: Responsive layout for the links */}
+            <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
 
-                {event.instagramLink && (
-                    <a 
-                        href={event.instagramLink}
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex flex-col items-center text-center p-3 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-gray-50 border border-gray-100 min-w-[120px]"
-                    >
-                        <div className="p-3 rounded-full from-pink-500 via-red-500 to-yellow-500 shadow-md mb-2">
-                            <InstagramIcon />
-                        </div>
-                        <div className="text-sm font-semibold text-gray-800">Instagram</div>
-                        <div className="text-xs text-gray-500 mt-1">Visit our page</div>
-                    </a>
-                )}
+                {/* --- 1. Instagram Link --- */}
+                <LinkCard 
+                    label="Instagram"
+                    url={event.instagramLink}
+                    iconClass="fab fa-instagram"
+                    iconColor="text-pink-600"
+                    subtext="Visit our page"
+                />
 
-                {event.websiteLink && (
-                    <a 
-                        href={event.websiteLink}
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex flex-col items-center text-center p-3 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-gray-50 border border-gray-100 min-w-[120px]"
-                    >
-                        <div className="p-3 rounded-full bg-blue-600 shadow-md mb-2">
-                            <WebsiteIcon />
-                        </div>
-                        <div className="text-sm font-semibold text-gray-800">Website</div>
-                        <div className="text-xs text-gray-500 mt-1">Official homepage</div>
-                    </a>
-                )}
+                {/* --- 2. Website Link --- */}
+                {/* Using websiteLink for Official Website link */}
+                <LinkCard 
+                    label="Official Website"
+                    url={event.websiteLink}
+                    iconClass="fas fa-globe"
+                    iconColor="text-blue-600"
+                    subtext="Official homepage"
+                />
 
             </div>
         </div>
