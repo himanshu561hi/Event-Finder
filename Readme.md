@@ -103,4 +103,4 @@ MINI-EVENT-FINDER/
     <tr><td><b>axios</b></td><td>^1.6.2</td><td>Handles all API calls from the client.</td></tr>
     <tr><td><b>tailwindcss</b></td><td>^3.4.4</td><td>Utility-first CSS framework for styling.</td></tr>
     <tr><td><b>@vitejs/plugin-react</b></td><td>^4.2.1</td><td>Vite plugin for React (Build Tool).</td></tr>
-</table>
+</table>. 
