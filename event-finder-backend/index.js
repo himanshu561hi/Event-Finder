@@ -9,7 +9,7 @@ require('dotenv').config();
 // Ensure node-fetch is available globally if needed, or use axios if preferred.
 // Keeping 'fetch' polyfill via 'node-fetch' as per original structure.
 // NOTE: Since Node 18+, native 'fetch' is available, but keeping 'node-fetch' for broader compatibility.
-const nodeFetch = require('node-fetch'); // Required for Opencage/Google Maps API calls
+const fetch = require('node-fetch'); // Required for Opencage/Google Maps API calls
 
 // --- Configuration Constants ---
 const PORT = process.env.PORT || 5050; 

@@ -8,3 +8,4 @@ npm-debug.log*
 # MongoDB (Local Data)
 /data/db
 *.sqlite
+/uploads

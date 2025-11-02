@@ -1,12 +1,19 @@
-// backend/routes/events.js
+
 
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+
+// 🎯 CRITICAL FIX: node-fetch V3+ ko .default ke saath import karein
+// Taki woh fetch function ke roop mein available ho.
+// Agar aapka Node version 18 se kam hai, toh yeh zaroori hai.
+const fetch = require('node-fetch').default; 
+
+// Mongoose Models ko load karein
 const Event = mongoose.model('Event');
 const User = mongoose.model('User');
-const DeletedEvent = mongoose.model('DeletedEvent');
-const fetch = require('node-fetch'); 
+const DeletedEvent = mongoose.model('DeletedEvent'); 
+
 require('dotenv').config();
 
 // --- Middleware: Check if User is Logged In ---
@@ -25,9 +32,9 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); return R * c; 
 };
 
-// 🎯 Finalized Geocoding Function for Debugging
+// 🎯 Finalized Geocoding Function
 const geocodeLocation = async (location) => {
-    const OPENCAGE_API_KEY = process.env.OPENCAGE_API_KEY; // <-- ENV key access
+    const OPENCAGE_API_KEY = process.env.OPENCAGE_API_KEY; 
     
     if (!OPENCAGE_API_KEY) {
         console.error("❌ Geocoding failed: OPENCAGE_API_KEY is missing in .env");
@@ -37,27 +44,25 @@ const geocodeLocation = async (location) => {
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(location)}&key=${OPENCAGE_API_KEY}`;
     
     try {
-        const response = await fetch(url);
+        const response = await fetch(url); // fetch() is now defined
         const data = await response.json(); 
 
-        // 🚨 Check for API Errors (like Invalid Key, Quota Exceeded, or Invalid Request)
         if (data.status && data.status.code !== 200) {
             console.error(`❌ OpenCage API returned error status ${data.status.code}: ${data.status.message}.`);
             return { lat: null, lon: null }; 
         }
 
         if (!data.results || data.results.length === 0) {
-            // Agar address vague hai
             console.warn(`⚠️ Geocoding failed for "${location}": No coordinates found.`);
             return { lat: null, lon: null }; 
         }
 
         const { lat, lng } = data.results[0].geometry;
-        console.log(`✅ Geocoding successful for location: ${location}. Lat: ${lat}, Lon: ${lng}`); // Enhanced success log
+        console.log(`✅ Geocoding successful for location: ${location}. Lat: ${lat}, Lon: ${lng}`);
         return { lat, lon: lng };
         
     } catch (error) {
-        console.error("❌ Geocoding Network/Parsing Error:", error);
+        console.error("❌ Geocoding Network/Parsing Error:", error.message);
         return { lat: null, lon: null }; 
     }
 };
@@ -69,7 +74,7 @@ const getRoadDistance = async (userLat, userLon, eventLat, eventLon) => {
     const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origins}&destinations=${destinations}&key=${GOOGLE_MAPS_API_KEY}`;
     
     try {
-        const response = await fetch(url); 
+        const response = await fetch(url); // fetch() is now defined
         const data = await response.json();
         
         if (data.status === 'OK' && data.rows.length > 0 && data.rows[0].elements[0].status === 'OK') {
@@ -80,7 +85,7 @@ const getRoadDistance = async (userLat, userLon, eventLat, eventLon) => {
         }
         return { distance: null, duration: null };
     } catch (error) { 
-        console.error("Google Maps Distance Error:", error);
+        console.error("Google Maps Distance Error:", error.message); // Logging error message instead of object
         return { distance: null, duration: null }; 
     }
 };
@@ -105,13 +110,12 @@ router.post('/', requireLogin, async (req, res) => {
             location, date, lastRegistrationDate, category, 
             fee: parseFloat(fee || 0), imageURL, instagramLink, websiteLink, registrationLink,
             maxParticipants: parseInt(maxParticipants), currentParticipants: 0,
-            locationLat: coords.lat,
-            locationLon: coords.lon,
+            locationLat: coords.lat, 
+            locationLon: coords.lon, 
         });
 
         const savedEvent = await newEvent.save(); // 1. Save Event
 
-        // 🎯 Update User document with the new Event ID
         await User.findByIdAndUpdate(
             req.user._id, 
             { $push: { createdEvents: savedEvent._id } },
@@ -124,6 +128,11 @@ router.post('/', requireLogin, async (req, res) => {
         res.status(500).json({ error: 'Error creating event. Check date formats or server logs.' });
     }
 });
+
+
+
+
+
 
 
 // PUT /api/events/:id - Update an event
