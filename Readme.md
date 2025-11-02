@@ -32,7 +32,7 @@
 -----
 
 ## 🗂️ Folder & File Structure
-
+<pre>
 MINI-EVENT-FINDER/
 ├── event-finder-backend/         # Node/Express Server
 │   ├── models/
