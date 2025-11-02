@@ -105,8 +105,8 @@ router.post('/', requireLogin, async (req, res) => {
             location, date, lastRegistrationDate, category, 
             fee: parseFloat(fee || 0), imageURL, instagramLink, websiteLink, registrationLink,
             maxParticipants: parseInt(maxParticipants), currentParticipants: 0,
-            locationLat: coords.lat, // Null तभी होगा जब geocoding fail ho
-            locationLon: coords.lon, // Null तभी होगा जब geocoding fail ho
+            locationLat: coords.lat,
+            locationLon: coords.lon,
         });
 
         const savedEvent = await newEvent.save(); // 1. Save Event
