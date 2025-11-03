@@ -131,8 +131,8 @@ const CreateEvent = () => {
     // Remaining JSX is unchanged to maintain UI/UX
     return (
         <div className="max-w-xl mx-auto p-6 border border-gray-200 rounded-lg shadow-lg bg-white">
-            <Link to="/dashboard" className="text-gray-600 hover:text-gray-800 mb-4 block">
-                ← Back to Dashboard
+            <Link to="/" className="text-gray-600 hover:text-gray-800 mb-4 block">
+                ← Back to Home
             </Link>
             
             <h2 className="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">
