@@ -103,7 +103,7 @@ const CreateEvent = () => {
             if (isEditing) {
                 // 🔑 FIX: API_BASE_URL use karein
                 await axios.put(
-                    `${API_BASE_URL}/events/${editId}`, 
+                    `${API_BASE_URL}/api/events/${editId}`, 
                     dataToSend, 
                     { withCredentials: true }
                 );
