@@ -93,7 +93,7 @@
 // });
 
 // backend/index.js
-
+app.enable('trust proxy');
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -121,8 +121,8 @@ mongoose
     console.error("❌ MongoDB connection error:", err);
     process.exit(1);
   });
-  
-app.enable('trust proxy');
+
+
 
 
 // --- MODEL & ROUTE IMPORTS ---
