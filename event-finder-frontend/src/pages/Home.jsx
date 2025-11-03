@@ -15,7 +15,7 @@ const Home = () => {
 
     if (!isAuthenticated) {
         // 🔒 Display Login Prompt
-        const googleAuthUrl = `${import.meta.env.VITE_BACKEND_URL}/auth/google` || 'http://localhost:5050/api/auth/google';
+        const googleAuthUrl = `${import.meta.env.VITE_BACKEND_URL}/api/auth/google` || 'http://localhost:5050/api/auth/google';
         
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center bg-red-50 p-12 rounded-xl shadow-2xl mt-10">
