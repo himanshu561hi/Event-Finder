@@ -1,25 +1,25 @@
 // // backend/index.js
 
 // const express = require('express');
-// const cors = require('cors'); 
-// const mongoose = require('mongoose'); 
+// const cors = require('cors');
+// const mongoose = require('mongoose');
 // const session = require('express-session');
 // const passport = require('passport');
-// require('dotenv').config(); 
+// require('dotenv').config();
 // // Ensure node-fetch is available globally if needed, or use axios if preferred.
 // // Keeping 'fetch' polyfill via 'node-fetch' as per original structure.
 // // NOTE: Since Node 18+, native 'fetch' is available, but keeping 'node-fetch' for broader compatibility.
 // const fetch = require('node-fetch'); // Required for Opencage/Google Maps API calls
 
 // // --- Configuration Constants ---
-// const PORT = process.env.PORT || 5050; 
-// const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'; 
+// const PORT = process.env.PORT || 5050;
+// const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 // // --- DATABASE CONNECTION ---
-// const MONGODB_URI = process.env.MONGODB_URI; 
+// const MONGODB_URI = process.env.MONGODB_URI;
 // if (!MONGODB_URI) {
 //     console.error('❌ MONGODB_URI is not set in environment variables.');
-//     process.exit(1); 
+//     process.exit(1);
 // }
 // mongoose.connect(MONGODB_URI)
 //     .then(() => console.log('✅ MongoDB connected successfully.'))
@@ -39,11 +39,11 @@
 // const app = express();
 
 // // --- MIDDLEWARE SETUP ---
-// const corsOptions = { 
-//     origin: FRONTEND_URL, 
-//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
-//     credentials: true, 
-//     optionsSuccessStatus: 204 
+// const corsOptions = {
+//     origin: FRONTEND_URL,
+//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//     credentials: true,
+//     optionsSuccessStatus: 204
 // };
 // app.use(cors(corsOptions));
 
@@ -77,18 +77,12 @@
 // app.use('/api/auth', authRoutes);
 // app.use('/api/events', eventRoutes);
 
-
-
-
-
 // const userRoutes = require('./routes/users'); // 🎯 NEW: User-specific routes
 
 // // All API routes are now imported
 // app.use('/api/auth', authRoutes);
 // app.use('/api/events', eventRoutes);
 // app.use('/api/users', userRoutes); // 🎯 NEW: Mapping to /api/users
-
-
 
 // // --- START SERVER ---
 // app.listen(PORT, () => {
@@ -98,97 +92,104 @@
 //     }
 // });
 
-
-
 // backend/index.js
 
-const express = require('express');
-const cors = require('cors'); 
-const mongoose = require('mongoose'); 
-const session = require('express-session');
-const passport = require('passport');
-const MongoStore = require('connect-mongo'); // 🎯 FIX 1: Import connect-mongo
-require('dotenv').config(); 
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const session = require("express-session");
+const passport = require("passport");
+const MongoStore = require("connect-mongo"); // 🎯 FIX 1: Import connect-mongo
+require("dotenv").config();
 
-const fetch = require('node-fetch'); 
+const fetch = require("node-fetch");
 
 // --- Configuration Constants ---
-const PORT = process.env.PORT || 5050; 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'; 
+const PORT = process.env.PORT || 5050;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 // --- DATABASE CONNECTION ---
-const MONGODB_URI = process.env.MONGODB_URI; 
+const MONGODB_URI = process.env.MONGODB_URI;
 if (!MONGODB_URI) {
-    console.error('❌ MONGODB_URI is not set in environment variables.');
-    process.exit(1); 
+  console.error("❌ MONGODB_URI is not set in environment variables.");
+  process.exit(1);
 }
-mongoose.connect(MONGODB_URI)
-    .then(() => console.log('✅ MongoDB connected successfully.'))
-    .catch(err => {
-        console.error('❌ MongoDB connection error:', err);
-        process.exit(1);
-    });
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => console.log("✅ MongoDB connected successfully."))
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1);
+  });
+  
+app.enable('trust proxy');
+
 
 // --- MODEL & ROUTE IMPORTS ---
-require('./models/User'); 
-require('./models/Event');
-require('./models/DeletedEvent');
+require("./models/User");
+require("./models/Event");
+require("./models/DeletedEvent");
 
 // Passport Configuration (Strategy and Serialization)
-require('./config/passport-setup'); 
+require("./config/passport-setup");
 
 const app = express();
 
 // --- MIDDLEWARE SETUP ---
-const corsOptions = { 
-    origin: FRONTEND_URL, 
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
-    credentials: true, 
-    optionsSuccessStatus: 204 
+const corsOptions = {
+  origin: FRONTEND_URL,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  optionsSuccessStatus: 204,
 };
 app.use(cors(corsOptions));
 
-app.get('/', (req, res) => {
-  res.send('Hello from Vercel!');
+app.get("/", (req, res) => {
+  res.send("Hello from Vercel!");
 });
 
-app.use(express.json()); 
-app.use(express.urlencoded({ extended: true })); 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Session Setup
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'a-strong-secret-key-for-session-management', 
+app.use(
+  session({
+    secret:
+      process.env.SESSION_SECRET ||
+      "a-strong-secret-key-for-session-management",
     resave: false,
     saveUninitialized: false,
-    // 🎯 FIX 2: Use MongoStore to store sessions persistently in MongoDB
     store: MongoStore.create({
-        mongoUrl: MONGODB_URI,
-        collectionName: 'sessions', 
+      mongoUrl: MONGODB_URI,
+      collectionName: "sessions",
     }),
     cookie: {
-        secure: process.env.NODE_ENV === 'production', 
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', 
-        maxAge: 24 * 60 * 60 * 1000 // 1 day
-    }
-}));
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: "none",
+    },
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 // --- ROUTES SETUP ---
-const authRoutes = require('./routes/auth');
-const eventRoutes = require('./routes/events');
-const userRoutes = require('./routes/users'); 
+const authRoutes = require("./routes/auth");
+const eventRoutes = require("./routes/events");
+const userRoutes = require("./routes/users");
 
 // All API routes are now imported
-app.use('/api/auth', authRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api/users', userRoutes); 
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/users", userRoutes);
 
 // --- START SERVER ---
 app.listen(PORT, () => {
-    console.log(`✅ Server is running on http://localhost:${PORT}`);
-    if (process.env.NODE_ENV === 'production') {
-        console.log('⚠️ Running in PRODUCTION mode (Secure cookies are ON)');
-    }
+  console.log(`✅ Server is running on http://localhost:${PORT}`);
+  if (process.env.NODE_ENV === "production") {
+    console.log("⚠️ Running in PRODUCTION mode (Secure cookies are ON)");
+  }
 });

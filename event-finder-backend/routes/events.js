@@ -44,7 +44,7 @@ const geocodeLocation = async (location) => {
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(location)}&key=${OPENCAGE_API_KEY}`;
     
     try {
-        const response = await fetch(url); // fetch() is now defined
+        const response = await fetch(url); 
         const data = await response.json(); 
 
         if (data.status && data.status.code !== 200) {
@@ -131,10 +131,6 @@ router.post('/', requireLogin, async (req, res) => {
 
 
 
-
-
-
-
 // PUT /api/events/:id - Update an event
 router.put('/:id', requireLogin, async (req, res) => {
     const eventId = req.params.id;
@@ -174,6 +170,7 @@ router.put('/:id', requireLogin, async (req, res) => {
         res.status(500).json({ error: 'Failed to update event.' });
     }
 });
+
 // DELETE /api/events/:id - Delete an event (Soft Delete/Archiving)
 router.delete('/:id', requireLogin, async (req, res) => {
     const eventId = req.params.id;
