@@ -64,10 +64,11 @@ const Navbar = () => {
         </div>
       );
     } else {
-      // लॉग आउट यूजर के लिए नियंत्रण
+     const googleAuthUrl = `${import.meta.env.VITE_BACKEND_URL}/api/auth/google` || 'http://localhost:5050/api/auth/google';
+        
       return (
         <a
-          href="/api/auth/google"
+          href={googleAuthUrl}
           className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-150 font-semibold text-sm"
         >
           Sign in with Google
