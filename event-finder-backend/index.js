@@ -43,7 +43,7 @@ app.enable('trust proxy');
 // --- MIDDLEWARE SETUP ---
 const corsOptions = {
   // Production (Vercel) पर, FRONTEND_URL 'https://event-finder-frontend-weld.vercel.app' होना चाहिए
-  origin: ['https://event-finder-frontend-weld.vercel.app', 'https://event-finder-jv4o.onrender.com', 'http://localhost:5173'], // सभी संभावित ओरिजिन शामिल करें
+  origin: ['https://eventfinderrr.vercel.app', 'https://event-finder-jv4o.onrender.com', 'http://localhost:5173'], // सभी संभावित ओरिजिन शामिल करें
     credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // CORS के लिए यह कुकी भेजने के लिए ज़रूरी है
