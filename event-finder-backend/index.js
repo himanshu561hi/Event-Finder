@@ -93,7 +93,8 @@
 // });
 
 // backend/index.js
-app.enable('trust proxy');
+// app.enable('trust proxy');
+
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -101,6 +102,7 @@ const session = require("express-session");
 const passport = require("passport");
 const MongoStore = require("connect-mongo"); // 🎯 FIX 1: Import connect-mongo
 require("dotenv").config();
+
 
 const fetch = require("node-fetch");
 
@@ -185,6 +187,8 @@ const userRoutes = require("./routes/users");
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/users", userRoutes);
+
+app.enable('trust proxy');
 
 // --- START SERVER ---
 app.listen(PORT, () => {
