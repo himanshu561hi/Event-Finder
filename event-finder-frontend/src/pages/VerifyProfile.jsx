@@ -97,7 +97,7 @@ const VerifyProfile = () => {
         // Note: Backend /api/users/verify user ID req.user._id se lega, frontend se bhejne ki zaroorat nahi.
         
         try {
-            await axios.post(`${API_BASE_URL}/users/verify`, dataToSend, {
+            await axios.post(`${API_BASE_URL}/api/users/verify`, dataToSend, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true 
             });

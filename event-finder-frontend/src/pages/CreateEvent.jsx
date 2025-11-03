@@ -110,7 +110,7 @@ const CreateEvent = () => {
             } else {
                 // 🔑 FIX: API_BASE_URL use karein
                 await axios.post(
-                    `${API_BASE_URL}/events`, 
+                    `${API_BASE_URL}/api/events`, 
                     dataToSend, 
                     { withCredentials: true }
                 );
