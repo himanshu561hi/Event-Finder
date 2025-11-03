@@ -84,7 +84,7 @@ const Navbar = () => {
           to="/"
           className="text-2xl font-extrabold text-blue-800 tracking-tight"
         >
-          Mini Event Finder
+          EventSyncc
         </Link>
         {renderAuthControls()}
       </div>
