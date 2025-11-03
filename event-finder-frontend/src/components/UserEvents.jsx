@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
 import { Link } from 'react-router-dom';
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5050/api';
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5050';
 
 const UserEvents = () => {
     const { user, isAuthenticated } = useAuth();
@@ -23,7 +23,7 @@ const UserEvents = () => {
         setLoading(true);
         try {
             // CRITICAL FIX: Use user._id (Mongoose ID) to query events by ownerId
-            const response = await axios.get(`${API_BASE_URL}/events?ownerId=${user._id}`);
+            const response = await axios.get(`${API_BASE_URL}/api/events?ownerId=${user._id}`);
             setUserEvents(response.data);
             setError(null);
         } catch (err) {
@@ -50,7 +50,7 @@ const UserEvents = () => {
         }
 
         try {
-            await axios.delete(`${API_BASE_URL}/events/${eventId}`, { withCredentials: true });
+            await axios.delete(`${API_BASE_URL}/api/events/${eventId}`, { withCredentials: true });
             
             setUserEvents(prevEvents => prevEvents.filter(event => event._id !== eventId));
             alert("Event deleted successfully!");

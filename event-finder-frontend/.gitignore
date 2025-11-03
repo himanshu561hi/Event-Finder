@@ -6,6 +6,7 @@
 /build
 
 # VITE/Tooling
+.env
 .vite/
 npm-debug.log*
 

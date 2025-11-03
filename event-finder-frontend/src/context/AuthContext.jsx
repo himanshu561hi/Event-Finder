@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
 
 const AuthContext = createContext();
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5050/api';
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5050';
 
 export const useAuth = () => useContext(AuthContext);
 
@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         // 🔑 FIX: Full path use karein
-        axios.get(`${API_BASE_URL}/auth/current_user`, { withCredentials: true })
+        axios.get(`${API_BASE_URL}/api/auth/current_user`, { withCredentials: true })
             .then(res => {
                 // Backend 'false' bhejega agar logged out hai
                 setUser(res.data || null); 
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             // 🔑 FIX: Full path use karein
-            await axios.get(`${API_BASE_URL}/auth/logout`, { withCredentials: true });
+            await axios.get(`${API_BASE_URL}/api/auth/logout`, { withCredentials: true });
             
             setUser(null);
             

@@ -2,12 +2,12 @@
 import axios from 'axios';
 
 // 🔑 FIX: Environment variable se URL use karein
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5050/api'; 
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5050'; 
 // NOTE: VITE projects mein environment variables ko VITE_ prefix se access karte hain.
 
 export const getEvents = async (locationFilter = '', userLat = null, userLon = null, radius = null) => {
     try {
-        let url = `${API_BASE_URL}/events`;
+        let url = `${API_BASE_URL}/api/events`;
         const params = new URLSearchParams();
 
         if (locationFilter) {
@@ -36,7 +36,7 @@ export const getEvents = async (locationFilter = '', userLat = null, userLon = n
 export const createEvent = async (eventData) => {
     try {
         const response = await axios.post(
-            `${API_BASE_URL}/events`, 
+            `${API_BASE_URL}/api/events`, 
             eventData,
             { withCredentials: true } 
         );
@@ -49,7 +49,7 @@ export const createEvent = async (eventData) => {
 
 export const getEventDetail = async (id) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/events/${id}`);
+        const response = await axios.get(`${API_BASE_URL}/api/events/${id}`);
         return response.data;
     } catch (error) {
         console.error(`Error fetching event ${id}:`, error);
@@ -61,7 +61,7 @@ export const getEventDetail = async (id) => {
 export const getEventDistance = async (eventId, userLat, userLon) => {
     try {
         const response = await axios.get(
-            `${API_BASE_URL}/events/distance/${eventId}?userLat=${userLat}&userLon=${userLon}`,
+            `${API_BASE_URL}/api/events/distance/${eventId}?userLat=${userLat}&userLon=${userLon}`,
             { withCredentials: true }
         );
         return response.data;
