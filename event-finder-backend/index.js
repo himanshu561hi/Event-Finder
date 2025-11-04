@@ -8,12 +8,10 @@ const MongoStore = require("connect-mongo");
 require("dotenv").config();
 
 const fetch = require("node-fetch");
-// 🎯 FIX: Cloudinary SDK ko import karein
 const cloudinary = require('cloudinary').v2; 
 
 // --- Configuration Constants ---
 const PORT = process.env.PORT || 5050;
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173"; 
 
 // --- DATABASE CONNECTION ---
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -29,8 +27,6 @@ mongoose
     process.exit(1);
   });
 
-// 🎯 FIX: Cloudinary Configuration ko MongoDB success ke baad set karein
-// (Taaki environment variables load ho chuke hon)
 // --- Cloudinary Configuration ---
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
