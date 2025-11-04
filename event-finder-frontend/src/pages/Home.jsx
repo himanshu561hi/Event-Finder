@@ -19,12 +19,23 @@ const Home = () => {
         
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center bg-red-50 p-12 rounded-xl shadow-2xl mt-10">
-                <h1 className="text-4xl font-extrabold text-red-700 mb-4">🔐 Access Restricted</h1>
-                <p className="text-xl text-gray-700 mb-8">Please sign in with Google to view and manage events.</p>
+                <h1 className="text-8xl font-extrabold text-blue-900 mb-6 relative">
+            EventSyncc
+            
+            {/* The two words are added here with absolute positioning */}
+            <span className="absolute bottom-[-18px] right-[10px] text-lg font-medium  px-3 py-1 rounded-full whitespace-nowrap">
+                Events Made Easy
+            </span>
+        </h1>
+                
+                <h2 className="text-2xl font-extrabold text-red-700 mb-2">🔐 Access Restricted</h2>
+                <p className="text-xl text-gray-700 mb-6">Please sign in with Google to view and manage events.</p>
                 <a 
                     href={googleAuthUrl} 
                     className="px-8 py-3 text-xl bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition duration-300 shadow-md"
                 >
+                    
+                
                     Sign in with Google
                 </a>
             </div>
