@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -7,11 +8,12 @@ const MongoStore = require("connect-mongo");
 require("dotenv").config();
 
 const fetch = require("node-fetch");
+// 🎯 FIX: Cloudinary SDK ko import karein
+const cloudinary = require('cloudinary').v2; 
 
 // --- Configuration Constants ---
 const PORT = process.env.PORT || 5050;
-// Note: Vercel console error indicates the exact origin is needed
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173"; // Ensure this matches Vercel: https://event-finder-frontend-weld.vercel.app
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173"; 
 
 // --- DATABASE CONNECTION ---
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -26,6 +28,16 @@ mongoose
     console.error("❌ MongoDB connection error:", err);
     process.exit(1);
   });
+
+// 🎯 FIX: Cloudinary Configuration ko MongoDB success ke baad set karein
+// (Taaki environment variables load ho chuke hon)
+// --- Cloudinary Configuration ---
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 
 // --- MODEL & ROUTE IMPORTS ---
 require("./models/User");
@@ -42,11 +54,9 @@ app.enable('trust proxy');
 
 // --- MIDDLEWARE SETUP ---
 const corsOptions = {
-  // Production (Vercel) पर, FRONTEND_URL 'https://event-finder-frontend-weld.vercel.app' होना चाहिए
-  origin: ['https://eventsyncc.vercel.app', 'https://event-finder-jv4o.onrender.com', 'http://localhost:5173'], // सभी संभावित ओरिजिन शामिल करें
-    credentials: true,
+  origin: ['https://eventsyncc.vercel.app', 'https://event-finder-jv4o.onrender.com', 'http://localhost:5173'], 
+  credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, // CORS के लिए यह कुकी भेजने के लिए ज़रूरी है
   optionsSuccessStatus: 204,
 };
 app.use(cors(corsOptions));
@@ -73,11 +83,8 @@ app.use(
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
       
-      // *** 🎯 FIX: Cookied settings को मर्ज करें और production के लिए अनिवार्य values सेट करें ***
-      // production पर, secure: true (HTTPS) और sameSite: 'none' (Cross-Domain) होना चाहिए
       secure: process.env.NODE_ENV === "production" ? true : false,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      // *****************************************************************************************
     },
   })
 );
