@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
 import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
+
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5050';
 
@@ -44,23 +46,75 @@ const UserEvents = () => {
     }, [isAuthenticated, user?._id]); 
 
     // Handles the deletion of an event
-    const handleDelete = async (eventId) => {
-        if (!window.confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
-            return;
-        }
-
+   const handleDelete = async (eventId) => {
+    // 1. Delete Execution Logic
+    // यह फ़ंक्शन कन्फर्मेशन मिलने पर चलाया जाएगा।
+    const executeDelete = async (id) => {
         try {
-            await axios.delete(`${API_BASE_URL}/api/events/${eventId}`, { withCredentials: true });
+            // API Call
+            await axios.delete(`${API_BASE_URL}/api/events/${id}`, { withCredentials: true });
             
-            setUserEvents(prevEvents => prevEvents.filter(event => event._id !== eventId));
-            alert("Event deleted successfully!");
+            // State Update
+            setUserEvents(prevEvents => prevEvents.filter(event => event._id !== id));
+            
+            // Success Toast
+            toast.success("Event Deleted Successfully", {
+              duration: 4000,
+              position: 'top-center',
+              style: {
+                  fontSize: '16px',
+                  backgroundColor: '#d1fae5', 
+                  color: '#065f46',         
+              }
+            });
 
         } catch (err) {
             console.error("Error deleting event:", err.response ? err.response.data : err);
-            alert("Failed to delete the event. You must be the owner to perform this action.");
+            // Error Toast
+            toast.error("❌ Failed to delete the event. You must be the owner to perform this action.");
         }
     };
 
+    // 2. Custom Confirmation Toast को दिखाएँ
+    // toast.custom() को कॉल करने पर यह एक ID रिटर्न करता है जिसे हम dismiss करने के लिए उपयोग करेंगे।
+    const confirmationToastId = toast.custom((t) => (
+        <div className="bg-white rounded-xl shadow-2xl p-4 max-w-sm w-full flex flex-col items-center border border-gray-100">
+            
+            <p className="text-gray-800 font-bold mb-3 text-center text-lg">
+                ⚠️ Confirm Deletion
+            </p>
+            <p className="text-sm text-gray-600 mb-4 text-center">
+                Are you sure you want to delete this event? This action cannot be undone.
+            </p>
+            
+            <div className="flex gap-3 w-full mt-2">
+                
+                {/* Cancel Button: केवल toast को हटाएगा */}
+                <button
+                    onClick={() => toast.dismiss(t.id)} 
+                    className="flex-1 px-3 py-2 text-sm font-semibold rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+                >
+                    Cancel
+                </button>
+                
+                {/* Delete Button: delete logic को चलाएगा और फिर toast को हटाएगा */}
+                <button
+                    onClick={() => {
+                        toast.dismiss(t.id); // पहले कन्फर्मेशन को हटाएँ
+                        executeDelete(eventId); // फिर delete logic चलाएँ
+                    }} 
+                    className="flex-1 px-3 py-2 text-sm font-semibold rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
+                >
+                    Delete Event
+                </button>
+            </div>
+        </div>
+    ), {
+        // यह toast तब तक स्क्रीन पर रहेगा जब तक यूज़र किसी बटन पर क्लिक नहीं करता
+        duration: Infinity, 
+        position: 'top-center',
+    });
+};
 
     if (loading) return <div className="text-center py-10 text-xl text-blue-600">Loading your events...</div>;
     if (error) return <div className="text-center py-10 text-xl text-red-600 border border-red-300 bg-red-50 rounded-lg">Error: {error}</div>;
@@ -68,6 +122,7 @@ const UserEvents = () => {
     // Remaining JSX is unchanged to maintain UI/UX
     return (
         <div>
+            <Toaster />
             {userEvents.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
                     {userEvents.map(event => (

@@ -95,7 +95,7 @@ const getRoadDistance = async (userLat, userLon, eventLat, eventLon) => {
 // POST /api/events - Create an event
 router.post('/', requireLogin, async (req, res) => { 
     const { title, description, location, date, maxParticipants, 
-            lastRegistrationDate, category, subcategory, fee, imageURL, instagramLink, websiteLink, registrationLink } = req.body;
+            lastRegistrationDate, category, subCategory, fee, imageURL, instagramLink, websiteLink, registrationLink } = req.body;
     
     if (!title || !location || !date || !maxParticipants) { 
         return res.status(400).json({ error: 'Missing required fields: title, location, date, maxParticipants.' }); 
@@ -107,7 +107,7 @@ router.post('/', requireLogin, async (req, res) => {
         const newEvent = new Event({ 
             ownerId: req.user._id, 
             title, description: description || '',
-            location, date, lastRegistrationDate, category, subcategory,
+            location, date, lastRegistrationDate, category, subCategory,
             fee: parseFloat(fee || 0), imageURL, instagramLink, websiteLink, registrationLink,
             maxParticipants: parseInt(maxParticipants), currentParticipants: 0,
             locationLat: coords.lat, 

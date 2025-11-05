@@ -73,10 +73,8 @@ const EventSchema = new mongoose.Schema({
     lastRegistrationDate: { 
         type: Date,
     },
-    // Subcategory successfully added and required
-    category: { type: String, required: true }, 
-    subCategory: { type: String, required: true }, // ✅ सब-कैटेगरी सही ढंग से जोड़ा गया है
-    // ...
+    category: { type: String }, 
+    subCategory: { type: String },
     fee: {
         type: Number,
         default: 0
@@ -91,7 +89,16 @@ const EventSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    // ...
-}, { timestamps: true }); 
+    maxParticipants: {
+        type: Number,
+        default: 1
+    },
+    currentParticipants: {
+        type: Number,
+        default: 0
+    },
+    locationLat: Number,
+    locationLon: Number,
+}, { timestamps: true });
 
 module.exports = mongoose.model('Event', EventSchema);
