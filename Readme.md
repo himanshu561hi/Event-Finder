@@ -1,106 +1,166 @@
-<h1 align="center" style="color:#007bff; font-size: 40px;">📅 Mini Event Finder & Manager 🗺️</h1> <h3 align="center" style="color:gray;">Securely Discover, Create, and Manage Events with Geo-Filtering</h3>
+# 📅 EventSyncc – Mini Event Finder & Manager 🗺️
 
-<p align="center" style="font-size: 16px;"> Mini Event Finder is a robust full-stack platform enabling authenticated users to list, discover, edit, and delete events. It features persistent storage via MongoDB and advanced geographical filtering based on the user's location. </p> <li><a href="http://localhost:5173/">LIVE LOCAL DEMO</a></li>
+> **Discover, Create, and Manage Events with Geo-Filtering & Profile Verification**
 
-<hr>
+EventSyncc is a modern full-stack web application designed for event discovery, management, and identity verification. It features Google OAuth 2.0 authentication, persistent storage via MongoDB, geocoding & road distance matrix APIs, user identity document upload via Cloudinary, and responsive UI with Tailwind CSS.
 
+---
 
-<ul>
-  <li><a href="#about">About the Project</a></li>
-  <li><a href="#tech">Tech Stack</a></li>
-  <li><a href="#dependencies">All Dependencies</a></li>
-  <li><a href="#setup">How to Use This Project</a></li>
-  <li><a href="#features">Key Features</a></li>
-  <li><a href="#routes">API Endpoints & Data Models</a></li>
-  <li><a href="#contact">Contact Me</a></li>
-</ul>
+## 🚀 Live Demo & Repository
+- **Local Dev Server**: `http://localhost:5173`
+- **Backend API**: `http://localhost:5050`
 
-<hr>
+---
 
-<h2 id="about">🧭 About the Project</h2>
+## 🎯 Key Features
 
-<p> Mini Event Finder is a robust, full-stack application designed for secure event management and discovery. Unlike simple listing apps, it features persistent user and event data storage, geographical filtering, and comprehensive event management tools. This project serves as a strong demonstration of modern web development principles and secure API integration. </p>
+- 🔐 **Secure Google Authentication**: Passport.js (Google OAuth 2.0) with persistent MongoDB session storage (`connect-mongo`).
+- 📍 **Location-Based Proximity & Geo-Filtering**: Auto-geocoding locations via OpenCage API and calculating real-time road distance/travel duration via Google Distance Matrix API.
+- 📜 **Event Lifecycle Management**: Full CRUD operations for creating, editing, viewing, and soft-deleting/archiving user-owned events.
+- 🆔 **User Profile Verification**: Verification workflow allowing users to submit identity documents processed via Multer and stored securely on Cloudinary.
+- 🎨 **Modern Responsive UI**: Built with React, Vite, Tailwind CSS, custom modals, and interactive toast notifications via React Hot Toast.
 
-<ul>   <li><strong>Persistent Data Management:</strong> Stores all user profiles and event details securely using <strong>MongoDB and Mongoose</strong>.</li>   <li><strong>Secure User Access:</strong> Implements Google OAuth 2.0 and Passport.js to ensure secure user authentication and session management.</li>   <li><strong>Geo-Filtering Capabilities:</strong> Enables users to find events by location name and filter listings by <strong>physical proximity (Haversine distance)</strong>.</li>   <li><strong>Full Event Lifecycle:</strong> Allows authenticated users to Create, Read, Update, and Delete (CRUD) their own events with automatic coordinate lookup (Geocoding).</li>   <li><strong>Dashboard View:</strong> Provides a clean, personalized dashboard for managing uploaded events and tracking user profile details.</li> </ul>
+---
 
-<hr>
+## 🗂️ Project Structure
 
-ज़रूर\! आपके **Mini Event Finder** प्रोजेक्ट के लिए यह $\text{Folder}$ $\text{Structure}$ का $\text{HTML}$ कंटेंट है, जिसे $\text{Markdown}$ में प्रस्तुत किया गया है।
-
-यह $\text{structure}$ $\text{Next.js}$ के बजाय हमारे $\text{React}$ / $\text{Node.js}$ प्रोजेक्ट की वास्तविक संरचना को दर्शाता है।
-
------
-
-## 🗂️ Folder & File Structure
-<pre>
-MINI-EVENT-FINDER/
-├── event-finder-backend/         # Node/Express Server
-│   ├── models/
-│   │   ├── Event.js             # Mongoose Schema for Events
-│   │   └── User.js              # Mongoose Schema for User Profiles
-│   ├── node_modules/
-│   ├── .env                     # API Keys and Secrets (CRITICAL - ignored by Git)
-│   ├── .gitignore
-│   └── index.js                 # Main Express App (Routes, Middleware, DB Connection)
+```
+Event-Finder/
+├── event-finder-backend/             # Node.js / Express Server
+│   ├── config/
+│   │   └── passport-setup.js        # Google Strategy & Serialization
+│   ├── helpers/
+│   │   └── upload.js                # Multer & Cloudinary Storage Config
+│   ├── models/
+│   │   ├── User.js                  # User Mongoose Schema (with verification)
+│   │   ├── Event.js                 # Event Mongoose Schema
+│   │   └── DeletedEvent.js          # Archived Event Schema
+│   ├── routes/
+│   │   ├── auth.js                  # Google Auth & Logout Routes
+│   │   ├── events.js                # Event CRUD & Distance API Routes
+│   │   └── users.js                 # Profile Verification Submission Route
+│   ├── index.js                     # Main Express App Server
+│   └── .env                         # Server Environment Variables
 │
-└── event-finder-frontend/        # React Client (Vite)
-    ├── node_modules/
-    ├── public/
-    │   └── images/               # Static assets (Social Media Icons, etc.)
+└── event-finder-frontend/            # React Client (Vite)
     ├── src/
-    │   ├── api/                 # Axios functions for all backend calls
-    │   │   └── events.js
-    │   ├── components/          # Reusable UI Elements
-    │   │   ├── Navbar.jsx       # Global Navigation & Auth Controls
-    │   │   ├── WelcomeBanner.jsx# Login Status Banner
-    │   │   └── UserEvents.jsx   # Filters and displays user's uploaded events
-    │   ├── context/
-    │   │   └── AuthContext.jsx  # Global user authentication state
-    │   ├── pages/               # Components linked to specific routes
-    │   │   ├── Dashboard.jsx    # Main user hub (where UserEvents is shown)
-    │   │   ├── EventList.jsx    # All events list view
-    │   │   ├── EventDetail.jsx  # Individual event details view
-    │   │   └── CreateEvent.jsx  # Create/Edit form (handles POST/PUT)
-    │   ├── App.jsx              # Main Router Configuration
-    │   └── main.jsx             # React Root Entry Point
-    └── .gitignore
-</pre>
+    │   ├── api/
+    │   │   └── events.js            # Axios helper functions for backend calls
+    │   ├── components/
+    │   │   ├── Navbar.jsx           # Global Navigation Header
+    │   │   ├── WelcomeBanner.jsx    # Hero/Welcome Component
+    │   │   ├── EventCard.jsx        # Individual Event Card Display
+    │   │   ├── EventLinks.jsx       # External Links Handler
+    │   │   └── UserEvents.jsx       # User Dashboard Uploaded Events Manager
+    │   ├── context/
+    │   │   └── AuthContext.jsx      # Global Authentication State Provider
+    │   ├── pages/
+    │   │   ├── Home.jsx             # Main Landing & Event List Page
+    │   │   ├── Dashboard.jsx        # User Profile & Dashboard View
+    │   │   ├── EventDetail.jsx      # Detailed Event Information & Distance Calculator
+    │   │   ├── CreateEvent.jsx      # Event Creation & Edit Form
+    │   │   ├── Settings.jsx         # User Settings & Status Dashboard
+    │   │   └── VerifyProfile.jsx    # Profile & Document Verification Form
+    │   ├── App.jsx                  # Main Router Setup
+    │   └── main.jsx                 # Entry Point
+    ├── .env                         # Client Environment Configuration
+    └── vite.config.js               # Vite Configuration
+```
 
-<hr>
+---
 
-<table>
-  <tr><th>Part</th><th>Technology</th><th>Role in Project</th></tr>
-  <tr><td>Frontend</td><td><b>React (Vite)</b></td><td>Dynamic UI, AuthContext, Geolocation calls</td></tr>
-  <tr><td>Styling</td><td><b>Tailwind CSS</b></td><td>Utility-first styling and responsive design</td></tr>
-  <tr><td>Backend</td><td><b>Node.js / Express.js</b></td><td>RESTful API endpoints and server logic</td></tr>
-  <tr><td>Database</td><td><b>MongoDB (Mongoose)</b></td><td>Persistent storage for Event and User models</td></tr>
-  <tr><td>Authentication</td><td><b>Google OAuth 2.0 (Passport.js)</b></td><td>Secure user login and session management</td></tr>
-  <tr><td>Geocoding</td><td><b>OpenCage / node-fetch</b></td><td>Address को Latitude/Longitude में convert करना</td></tr>
-  <tr><td>Routing Logic</td><td><b>Google Distance Matrix API</b></td><td>वास्तविक सड़क की दूरी (Road Distance) की गणना करना</td></tr>
-</table>
+## 🛠️ Tech Stack & Dependencies
 
-<hr>
+### **Backend**
+- **Core**: Node.js, Express.js
+- **Database**: MongoDB, Mongoose ORM
+- **Auth & Session**: Passport.js (`passport-google-oauth20`), `express-session`, `connect-mongo`
+- **File Upload**: `multer`, `multer-storage-cloudinary`, `cloudinary`
+- **APIs & Utilities**: `dotenv`, `cors`, `node-fetch`
 
-<h3>Backend Packages (Server Logic & DB)</h3>
-<table>
-    <tr><th>Package</th><th>Version (Example)</th><th>Purpose</th></tr>
-    <tr><td><b>mongoose</b></td><td>^8.4.3</td><td>MongoDB connection and schema management (ODM).</td></tr>
-    <tr><td><b>passport</b></td><td>^0.7.0</td><td>Core authentication middleware.</td></tr>
-    <tr><td><b>passport-google-oauth20</b></td><td>^2.0.0</td><td>Google Sign-In strategy implementation.</td></tr>
-    <tr><td><b>express-session</b></td><td>^1.18.0</td><td>Tracks user login state and session management.</td></tr>
-    <tr><td><b>node-fetch</b></td><td>^2.6.7</td><td>Makes external API calls (Geocoding/Distance Matrix).</td></tr>
-    <tr><td><b>dotenv</b></td><td>^16.4.5</td><td>Loads API keys and secrets from the .env file.</td></tr>
-    <tr><td><b>express</b></td><td>^4.19.2</td><td>Main server and API routing framework.</td></tr>
-    <tr><td><b>cors</b></td><td>^2.8.5</td><td>Allows cross-origin requests.</td></tr>
-    <tr><td><b>nodemon</b></td><td>^3.1.4</td><td>Automatically restarts the server (DevDependency).</td></tr>
-</table>
+### **Frontend**
+- **Framework & Build**: React 19, Vite
+- **Routing**: `react-router-dom` v7
+- **Styling**: Tailwind CSS
+- **HTTP Client**: Axios
+- **Notifications**: `react-hot-toast`
 
-<h3>Frontend Packages (UI & Routing)</h3>
-<table>
-    <tr><th>Package</th><th>Version (Example)</th><th>Purpose</th></tr>
-    <tr><td><b>react</b></td><td>^18.2.0</td><td>Core library for building the user interface.</td></tr>
-    <tr><td><b>react-router-dom</b></td><td>^6.23.1</td><td>Handles client-side navigation and routing.</td></tr>
-    <tr><td><b>axios</b></td><td>^1.6.2</td><td>Handles all API calls from the client.</td></tr>
-    <tr><td><b>tailwindcss</b></td><td>^3.4.4</td><td>Utility-first CSS framework for styling.</td></tr>
-    <tr><td><b>@vitejs/plugin-react</b></td><td>^4.2.1</td><td>Vite plugin for React (Build Tool).</td></tr>
-</table>. 
+---
+
+## ⚙️ Environment Configuration (.env)
+
+### **Backend (`event-finder-backend/.env`)**
+```env
+PORT=5050
+MONGODB_URI=mongodb://localhost:27017/event-finder
+SESSION_SECRET=your_session_secret
+HOST_URL=http://localhost:5050
+FRONTEND_URL=http://localhost:5173
+NODE_ENV=development
+
+# Google OAuth Credentials
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# Cloudinary Storage
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Geocoding & Maps APIs
+OPENCAGE_API_KEY=your_opencage_key
+GOOGLE_MAPS_API_KEY=your_google_maps_key
+```
+
+### **Frontend (`event-finder-frontend/.env`)**
+```env
+VITE_BACKEND_URL=http://localhost:5050
+```
+
+---
+
+## 🚦 How to Run Locally
+
+### 1. **Clone the Repository**
+```bash
+git clone https://github.com/himanshu561hi/Event-Finder.git
+cd Event-Finder
+```
+
+### 2. **Run Backend**
+```bash
+cd event-finder-backend
+npm install
+npm start
+```
+*Backend server will start at `http://localhost:5050`*
+
+### 3. **Run Frontend**
+```bash
+cd ../event-finder-frontend
+npm install
+npm run dev
+```
+*Frontend app will start at `http://localhost:5173`*
+
+---
+
+## 📡 API Endpoints Summary
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| `GET` | `/api/auth/google` | Initiates Google OAuth Login | No |
+| `GET` | `/api/auth/current_user` | Fetches current user session data | No |
+| `GET` | `/api/auth/logout` | Destroys active session & logs out | Yes |
+| `GET` | `/api/events` | List all events (supports location & radius filters) | No |
+| `GET` | `/api/events/:id` | Get detailed information for a single event | No |
+| `POST` | `/api/events` | Create a new event | Yes |
+| `PUT` | `/api/events/:id` | Update an existing event (owner only) | Yes |
+| `DELETE` | `/api/events/:id` | Soft delete/archive an event (owner only) | Yes |
+| `GET` | `/api/events/distance/:id` | Calculate road distance to event coordinates | No |
+| `POST` | `/api/users/verify` | Submit profile verification & ID document | Yes |
+
+---
+
+## 📄 License
+This project is open-source under the ISC License.

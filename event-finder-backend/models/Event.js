@@ -79,16 +79,10 @@ const EventSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    imageURL: { 
-        type: String, 
-        required: true // ⚠️ ध्यान दें: फ्रंटएंड फॉर्म इसे वैकल्पिक (optional) मान रहा था, लेकिन स्कीमा इसे आवश्यक (required) मान रही है।
-    },
+    imageURL: String,
     instagramLink: String,
     websiteLink: String,
-    registrationLink:  { 
-        type: String, 
-        required: true 
-    },
+    registrationLink: String,
     maxParticipants: {
         type: Number,
         default: 1

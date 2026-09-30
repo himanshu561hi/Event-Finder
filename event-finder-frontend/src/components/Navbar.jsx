@@ -64,7 +64,8 @@ const Navbar = () => {
         </div>
       );
     } else {
-     const googleAuthUrl = `${import.meta.env.VITE_BACKEND_URL}/api/auth/google` || 'http://localhost:5050/api/auth/google';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5050';
+      const googleAuthUrl = `${backendUrl}/api/auth/google`;
         
       return (
         <a
